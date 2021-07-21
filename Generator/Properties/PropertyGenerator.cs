@@ -29,15 +29,15 @@ namespace Generator.Properties
         {
             var arguments = new List<string>()
             {
-                $"nativeName: \"{property.Name}\"",
-                $"managedName: nameof({property.SymbolName})"
+                $"nativeName: \"{property.OriginalName}\"",
+                $"managedName: nameof({property.Name})"
             };
 
             if (property.Readable)
-                arguments.Add($"get: o => o.{property.SymbolName}");
+                arguments.Add($"get: o => o.{property.Name}");
 
             if (property.Writeable)
-                arguments.Add($"set: (o, v) => o.{property.SymbolName} = v");
+                arguments.Add($"set: (o, v) => o.{property.Name} = v");
 
             return string.Join(",\r\n    ", arguments);
         }
@@ -48,7 +48,7 @@ namespace Generator.Properties
             var typeName = property.GetTypeName(currentNamespace);
 
             var builder = new StringBuilder();
-            builder.AppendLine($"public {typeName} {property.SymbolName}");
+            builder.AppendLine($"public {typeName} {property.Name}");
             builder.AppendLine("{");
 
             if (property.Readable)

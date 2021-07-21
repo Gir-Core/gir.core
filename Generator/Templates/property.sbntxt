@@ -1,19 +1,19 @@
 {{~
 # $property_type = $1.symbol_reference | write_native_symbol_reference
-# $property_descriptor_name = $1.symbol_name + 'Property'
+# $property_descriptor_name = $1.name + 'Property'
 ~}}
-#region {{ $1.symbol_name }}
+#region {{ $1.name }}
 
 /// <summary>
-/// TODO: Property descriptor for <see cref="{{ $1.symbol_name }}" />.
+/// TODO: Property descriptor for <see cref="{{ $1.name }}" />.
 /// </summary>
 /*public static readonly Property<{{ $property_type }}> {{ $property_descriptor_name }} = Property<{{ $property_type }}>.Wrap<{{ $1.native_name }}>(
     Native.{{ $property_descriptor_name }},
-    nameof({{ $1.symbol_name }}),
-    (o) => o.{{ $1.symbol_name }}{{ if $1.writeable }},
-    (o, v) => o.{{ $1.symbol_name }} = v{{ end }}
+    nameof({{ $1.name }}),
+    (o) => o.{{ $1.name }}{{ if $1.writeable }},
+    (o, v) => o.{{ $1.name }} = v{{ end }}
 );*/
 
-//{{ $property_type }} {{ $1.symbol_name }} { get; set; }
+//{{ $property_type }} {{ $1.name }} { get; set; }
 
 #endregion

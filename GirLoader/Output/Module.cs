@@ -25,8 +25,6 @@ namespace GirLoader.Output
     [Register(typeof(Model.FieldFactory))]
     [Register(typeof(Model.SignalFactory))]
     [Register(typeof(Model.ConstantFactory))]
-    [Register(typeof(Model.ArrayFactory))]
-    [Register(typeof(Model.TypeInformationFactory))]
     [Register(typeof(Model.UnionFactory))]
     [Register(typeof(Model.RepositoryFactory))]
     internal class Module { }

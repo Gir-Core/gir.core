@@ -10,7 +10,7 @@ namespace Generator
     [Register(typeof(DllImportResolverFactory))]
     [Register(typeof(WriteHelperService))]
     [Register(typeof(WriteModuleService))]
-    [Register(typeof(WriteSymbolsService))]
+    [Register(typeof(WriteTypesService))]
     [Register(typeof(WriteInterfaceService))]
     [Register(typeof(WriteClassService))]
     [Register(typeof(WriteElementsService))]

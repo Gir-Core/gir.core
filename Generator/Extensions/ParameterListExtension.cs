@@ -58,11 +58,11 @@ namespace Generator
             return parameter switch
             {
                 // Simple array with fixed size length
-                { TypeInformation: { Array: { Length: { } l } } } => $"[MarshalAs(UnmanagedType.LPArray, SizeParamIndex={l + offset})]",
+                { TypeReference: ArrayTypeReference { Length: { } l }  } => $"[MarshalAs(UnmanagedType.LPArray, SizeParamIndex={l + offset})]",
 
                 // Array without length and no transfer of type string. We assume null terminated array, which should
                 // be marshaled as a SafeHandle: We do not need an attribute.
-                { TypeInformation: { Array: { Length: null } }, Transfer: Transfer.None, TypeReference: { ResolvedType: String } } => string.Empty,
+                { TypeReference: ArrayTypeReference { Length: null }, Transfer: Transfer.None, TypeReference: { ResolvedType: String } } => string.Empty,
 
                 // Marshal as a UTF-8 encoded string
                 { TypeReference: { ResolvedType: Utf8String } } => "[MarshalAs(UnmanagedType.LPUTF8Str)] ",
@@ -89,7 +89,7 @@ namespace Generator
             {
                 index += 1;
                 var type = argument.WriteType(Target.Native, currentNamespace);
-                var name = GirLoader.Helper.String.ToPascalCase(argument.SymbolName);
+                var name = new GirLoader.Helper.String(argument.Name).ToPascalCase();
 
                 builder.AppendLine($"//TODO: public {type} {name} => Args[{index}].Extract<{type}>();");
                 builder.AppendLine($"public string {name} => \"\";");

@@ -2,7 +2,7 @@
 {
     public interface Parameter : TransferableAnyType
     {
-        SymbolName SymbolName { get; }
+        SymbolName Name { get; }
         Direction Direction { get; }
         bool Nullable { get; }
         bool CallerAllocates { get; }

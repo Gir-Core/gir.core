@@ -47,7 +47,7 @@ namespace Generator.Services.Writer
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Could not write union for {union.SymbolName}: {ex.Message}");
+                    Log.Error($"Could not write union for {union.Name}: {ex.Message}");
                 }
             }
         }

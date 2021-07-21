@@ -1,1 +1,1 @@
-{{$1.symbol_name}} = {{ $1.value }},
+{{$1.name}} = {{ $1.value }},

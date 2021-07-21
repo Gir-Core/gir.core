@@ -3,12 +3,12 @@ using GirLoader.Helper;
 
 namespace GirLoader.Output.Model
 {
-    public class Signal : Element
+    public class Signal : Symbol
     {
         public ReturnValue ReturnValue { get; }
         public ParameterList ParameterList { get; }
 
-        public Signal(ElementName elementName, SymbolName symbolName, ReturnValue returnValue, ParameterList parameterList) : base(elementName, symbolName)
+        public Signal(SymbolName originalName, SymbolName symbolName, ReturnValue returnValue, ParameterList parameterList) : base(originalName, symbolName)
         {
             ReturnValue = returnValue;
             ParameterList = parameterList;

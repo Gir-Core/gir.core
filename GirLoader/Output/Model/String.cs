@@ -18,11 +18,15 @@
         public PlatformString() : base("filename") { }
     }
 
-    public abstract class String : Type
+    public abstract class String : PrimitiveType
     {
-        protected String(string nativeName)
-            : base(new CTypeName(nativeName), new TypeName(nativeName), new SymbolName("string"))
+        protected String(string originalName) : base(new CType("gchar*"), new SymbolName(originalName), new SymbolName("string"))
         {
+        }
+        
+        internal override bool Matches(TypeReference typeReference)
+        {
+            return typeReference.SymbolNameReference.SymbolName == OriginalName;
         }
     }
 }

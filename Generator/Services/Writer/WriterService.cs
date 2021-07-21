@@ -11,7 +11,7 @@ namespace Generator.Services.Writer
 
     internal class WriterService
     {
-        private readonly WriteSymbolsService _writeSymbolsService;
+        private readonly WriteTypesService _writeTypesService;
         private readonly WriteModuleService _writeModuleService;
         private readonly WriteElementsService _writeElementsService;
         private readonly WriteRecordsService _writeRecordsService;
@@ -22,9 +22,9 @@ namespace Generator.Services.Writer
         private readonly WriteInterfaceService _writeInterfaceService;
         private readonly WriteCallbacksService _writeCallbacksService;
 
-        public WriterService(WriteSymbolsService writeSymbolsService, WriteModuleService writeModuleService, WriteElementsService writeElementsService, WriteRecordsService writeRecordsService, WriteStaticService writeStaticService, WriteClassService writeClassService, WriteUnionsService writeUnionsService, WriteSafeHandlesService writeSafeHandlesService, WriteInterfaceService writeInterfaceService, WriteCallbacksService writeCallbacksService)
+        public WriterService(WriteTypesService writeTypesService, WriteModuleService writeModuleService, WriteElementsService writeElementsService, WriteRecordsService writeRecordsService, WriteStaticService writeStaticService, WriteClassService writeClassService, WriteUnionsService writeUnionsService, WriteSafeHandlesService writeSafeHandlesService, WriteInterfaceService writeInterfaceService, WriteCallbacksService writeCallbacksService)
         {
-            _writeSymbolsService = writeSymbolsService;
+            _writeTypesService = writeTypesService;
             _writeModuleService = writeModuleService;
             _writeElementsService = writeElementsService;
             _writeRecordsService = writeRecordsService;
@@ -64,21 +64,21 @@ namespace Generator.Services.Writer
                 @namespace: ns
             );
 
-            _writeSymbolsService.Write(
+            _writeTypesService.Write(
                 projectName: ns.ToCanonicalName(),
                 outputDir: outputDir,
                 templateName: "enum.sbntxt",
                 subfolder: Folder.Managed.Enums,
-                objects: ns.Enumerations,
+                types: ns.Enumerations,
                 @namespace: ns
             );
 
-            _writeSymbolsService.Write(
+            _writeTypesService.Write(
                 projectName: ns.ToCanonicalName(),
                 outputDir: outputDir,
                 templateName: "enum.sbntxt",
                 subfolder: Folder.Managed.Enums,
-                objects: ns.Bitfields,
+                types: ns.Bitfields,
                 @namespace: ns
             );
 

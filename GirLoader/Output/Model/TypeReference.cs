@@ -2,35 +2,32 @@
 
 namespace GirLoader.Output.Model
 {
-    public class TypeReference : Resolveable
+    public abstract class TypeReference : Resolveable
     {
         #region Properties
-
-        public Type? ResolvedType { get; private set; }
-        public NamespaceName? NamespaceName { get; }
-        public CTypeName? CTypeName { get; }
-        public TypeName? TypeName { get; }
-
+        public CTypeReference? CTypeReference { get; }
+        public SymbolNameReference? SymbolNameReference { get; }
+        public abstract Type? ResolvedType { get; }
+        
         #endregion
 
-        public TypeReference(TypeName? typeName, CTypeName? ctypeName, NamespaceName? namespaceName)
+        public TypeReference(SymbolNameReference? symbolNameReference, CTypeReference? ctypeReference)
         {
-            CTypeName = ctypeName;
-            TypeName = typeName;
-            NamespaceName = namespaceName;
+            CTypeReference = ctypeReference;
+            SymbolNameReference = symbolNameReference;
         }
-
+        
         public Type GetResolvedType()
         {
             if (ResolvedType is null)
-                throw new InvalidOperationException($"The symbolreference for {TypeName} has not been resolved.");
+                throw new InvalidOperationException($"The {GetType().Namespace} for {SymbolNameReference} has not been resolved.");
 
             return ResolvedType;
         }
 
-        public void ResolveAs(Type type)
+        public override string ToString()
         {
-            ResolvedType = type;
+            return $"CType: {CTypeReference}, OriginalName: {SymbolNameReference}";
         }
 
         public bool GetIsResolved()

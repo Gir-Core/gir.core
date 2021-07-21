@@ -24,21 +24,21 @@ namespace GirLoader.Output.Model
                 _ => null
             };
 
-            CTypeName? cTypeName = null;
+            CType? cTypeName = null;
             if (union.CType is { })
-                cTypeName = new CTypeName(union.CType);
+                cTypeName = new CType(union.CType);
 
             return new Union(
                 repository: repository,
-                cTypeName: cTypeName,
-                typeName: new TypeName(union.Name),
+                cType: cTypeName,
+                originalName: new SymbolName(union.Name),
                 symbolName: new SymbolName(union.Name),
-                methods: _methodFactory.Create(union.Methods, repository.Namespace.Name),
-                functions: _methodFactory.Create(union.Functions, repository.Namespace.Name),
+                methods: _methodFactory.Create(union.Methods),
+                functions: _methodFactory.Create(union.Functions),
                 getTypeFunction: getTypeFunction,
                 fields: _fieldFactory.Create(union.Fields, repository),
                 disguised: union.Disguised,
-                constructors: _methodFactory.Create(union.Constructors, repository.Namespace.Name)
+                constructors: _methodFactory.Create(union.Constructors)
             );
         }
     }

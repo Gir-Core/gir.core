@@ -14,7 +14,7 @@ namespace {{ namespace.name }}
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Could not register type '{{ $class.symbol_name }}': {e.Message}");
+                Console.WriteLine($"Could not register type '{{ $class.name }}': {e.Message}");
             }
             {{ end }}
         }

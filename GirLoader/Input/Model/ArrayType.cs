@@ -2,7 +2,7 @@
 
 namespace GirLoader.Input.Model
 {
-    public class Array
+    public class ArrayType : AnyType
     {
         [XmlAttribute("length")]
         public string? Length { get; set; }
@@ -20,6 +20,6 @@ namespace GirLoader.Input.Model
         public Type? Type { get; set; }
 
         [XmlElement("array")]
-        public Array? SubArray { get; set; }
+        public ArrayType? Array { get; set; }
     }
 }

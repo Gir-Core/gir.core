@@ -15,7 +15,7 @@ namespace GirLoader.Output.Model
             _parameterListFactory = parameterListFactory;
         }
 
-        public Signal Create(Input.Model.Signal signal, NamespaceName namespaceName)
+        public Signal Create(Input.Model.Signal signal)
         {
             if (signal.Name is null)
                 throw new Exception($"{nameof(signal)} is missing a {nameof(signal.Name)}");
@@ -24,14 +24,14 @@ namespace GirLoader.Output.Model
                 throw new Exception($"{nameof(Input.Model.Signal)} {signal.Name} {nameof(signal.ReturnValue)} is null");
 
             return new Signal(
-                elementName: new ElementName(signal.Name),
-                symbolName: new SymbolName(Helper.String.ToPascalCase(signal.Name)),
-                returnValue: _returnValueFactory.Create(signal.ReturnValue, namespaceName),
-                parameterList: _parameterListFactory.Create(signal.Parameters, namespaceName)
+                originalName: new SymbolName(signal.Name),
+                symbolName: new SymbolName(new Helper.String(signal.Name).ToPascalCase()),
+                returnValue: _returnValueFactory.Create(signal.ReturnValue),
+                parameterList: _parameterListFactory.Create(signal.Parameters)
             );
         }
 
-        public IEnumerable<Signal> Create(IEnumerable<Input.Model.Signal> signals, NamespaceName namespaceName)
-            => signals.Select(x => Create(x, namespaceName)).ToList();
+        public IEnumerable<Signal> Create(IEnumerable<Input.Model.Signal> signals)
+            => signals.Select(Create).ToList();
     }
 }

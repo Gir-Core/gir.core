@@ -21,7 +21,7 @@ namespace Generator
             if (!CanGenerateDelegate(parameterList, returnValue))
                 return "default!;";
 
-            var nativeParams = parameterList.SingleParameters.Select(x => x.SymbolName);
+            var nativeParams = parameterList.SingleParameters.Select(x => x.Name);
             return "(" + string.Join(',', nativeParams) + ") =>";
         }
 
@@ -55,17 +55,17 @@ namespace Generator
             // Remove userData, closure data parameters
             var managedParams = parameterList.GetManagedParameters();
 
-            foreach (Parameter arg in managedParams)
+            foreach (Parameter parameter in managedParams)
             {
                 var expression = Convert.NativeToManaged(
-                    transferable: arg,
-                    fromParam: arg.SymbolName,
+                    transferable: parameter,
+                    fromParam: parameter.Name,
                     currentNamespace: currentNamespace,
                     useSafeHandle: false
                 );
 
-                builder.AppendLine($"var {arg.SymbolName}Managed = {expression};");
-                args.Add(arg.SymbolName + "Managed");
+                builder.AppendLine($"var {parameter.Name}Managed = {expression};");
+                args.Add(parameter.Name + "Managed");
             }
 
             var funcArgs = string.Join(
@@ -94,26 +94,26 @@ namespace Generator
 
             // No union parameters
             if (parameterList.SingleParameters.Any(param =>
-                param.TypeReference.GetResolvedType() is Union))
+                param.TypeReference.ResolvedType is Union))
                 return false;
 
             // No GObject array parameters
             if (parameterList.SingleParameters.Any(param =>
-                param.TypeReference.GetResolvedType() is Class &&
-                param.TypeInformation.Array != null))
+                param.TypeReference.ResolvedType is Class &&
+                param.TypeReference is ArrayTypeReference))
                 return false;
 
             // No delegate return values
-            if (returnValue.TypeReference.GetResolvedType() is Callback)
+            if (returnValue.TypeReference.ResolvedType is Callback)
                 return false;
 
             // No union return values
-            if (returnValue.TypeReference.GetResolvedType() is Union)
+            if (returnValue.TypeReference.ResolvedType is Union)
                 return false;
 
             // No GObject array return values
-            if (returnValue.TypeReference.GetResolvedType() is Class &&
-                returnValue.TypeInformation.Array != null)
+            if (returnValue.TypeReference.ResolvedType is Class &&
+                returnValue.TypeReference is ArrayTypeReference)
                 return false;
 
             // Go ahead and generate

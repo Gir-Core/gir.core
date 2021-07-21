@@ -15,11 +15,9 @@ namespace GirLoader.Output.Model
             if (member.Value is null)
                 throw new Exception($"Member {member.Name} is missing a value");
 
-            var ident = Helper.String.ToPascalCase(member.Name);
-
             return new Member(
-                elementName: new ElementName(member.Identifier),
-                symbolName: new SymbolName(Helper.String.EscapeIdentifier(ident)),
+                originalName: new SymbolName(member.Name),
+                symbolName: new SymbolName(new Helper.String(member.Name).EscapeIdentifier().ToPascalCase()),
                 value: member.Value
             );
         }

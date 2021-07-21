@@ -30,7 +30,7 @@ namespace Generator.Services.Writer
                         outputDir: outputDir,
                         templateName: "interface.sbntxt",
                         folder: Folder.Managed.Interfaces,
-                        fileName: iface.SymbolName,
+                        fileName: iface.Name,
                         scriptObject: scriptObject
                     );
 
@@ -39,13 +39,13 @@ namespace Generator.Services.Writer
                         outputDir: outputDir,
                         templateName: "interface.native.instance.sbntxt",
                         folder: Folder.Native.Interfaces,
-                        fileName: iface.SymbolName + ".Instance",
+                        fileName: iface.Name + ".Instance",
                         scriptObject: scriptObject
                     );
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Could not write interface for {iface.SymbolName}: {ex.Message}");
+                    Log.Error($"Could not write interface for {iface.Name}: {ex.Message}");
                 }
             }
         }

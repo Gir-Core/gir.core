@@ -6,46 +6,67 @@ namespace GirLoader.Output.Model
 {
     internal class TypeReferenceFactory
     {
-        public TypeReference Create(string? type, string? ctype, NamespaceName currentNamespace)
+        public ResolveableTypeReference CreateResolveable(string? name, string? ctype)
         {
-            return new TypeReference(
-                typeName: GetType(type),
-                ctypeName: GetCType(ctype),
-                namespaceName: GetNamespace(type, currentNamespace)
+            return new ResolveableTypeReference(
+                symbolNameReference: GetSymbolNameReference(name),
+                ctype: GetCType(ctype)
             );
         }
 
-        public TypeReference Create(Input.Model.AnyType anyType, NamespaceName currentNamespace)
+        public TypeReference Create(Input.Model.AnyType anyType)
         {
-            if (TryCreate(anyType?.Type, currentNamespace, out var type))
-                return type;
+            if (TryCreateResolveableTypeReference(anyType, out var typeRefernece))
+                return typeRefernece;
 
-            if (TryCreate(anyType?.Array?.Type, currentNamespace, out var array))
-                return array;
+            if (TryCreateArrayTypeReference(anyType, out var arrayTypeRefernece))
+                return arrayTypeRefernece;
 
-            return Create("void", "none", currentNamespace);
+            return CreateResolveable("void", "none");
         }
 
-        public TypeReference Create(Input.Model.Type type, NamespaceName currentNamespace)
+        private bool TryCreateResolveableTypeReference(Input.Model.AnyType anyType, [NotNullWhen(true)] out TypeReference? typeReference)
         {
-            if (TryCreate(type, currentNamespace, out var symbolReference))
-                return symbolReference;
-
-            throw new Exception("Could not create SymbolReference vrom TypeInfo");
-        }
-
-        private bool TryCreate(Input.Model.Type? type, NamespaceName currentNamespace, [MaybeNullWhen(false)] out TypeReference typeReference)
-        {
-            typeReference = null;
-
-            if (type is null)
+            if (anyType.Type is null)
+            {
+                typeReference = null;
                 return false;
+            }
 
-            typeReference = Create(type.Name, type.CType, currentNamespace);
+            typeReference = new ResolveableTypeReference(
+                symbolNameReference: GetSymbolNameReference(anyType.Type.Name),
+                ctype: GetCType(anyType.Type.CType));
+
             return true;
         }
 
-        public IEnumerable<TypeReference> Create(IEnumerable<Input.Model.Implement> implements, NamespaceName currentNamespace)
+        private bool TryCreateArrayTypeReference(Input.Model.AnyType anyType, [NotNullWhen(true)] out ArrayTypeReference? arrayTypeReference)
+        {
+            if (anyType.Array is null)
+            {
+                arrayTypeReference = null;
+                return false;
+            }
+
+            var typeReference = Create(anyType.Array);
+
+            int? length = int.TryParse(anyType.Array.Length, out var l) ? l : null;
+            int? fixedSize = int.TryParse(anyType.Array.FixedSize, out var f) ? f : null;
+
+            arrayTypeReference = new ArrayTypeReference(
+                typeReference: typeReference,
+                symbolNameReference: null,
+                ctype: GetCType(anyType.Array.CType))
+            {
+                Length = length, 
+                FixedSize = fixedSize, 
+                IsZeroTerminated = anyType.Array.ZeroTerminated
+            };
+            
+            return true;
+        }
+
+        public IEnumerable<TypeReference> Create(IEnumerable<Input.Model.Implement> implements)
         {
             var list = new List<TypeReference>();
 
@@ -54,46 +75,34 @@ namespace GirLoader.Output.Model
                 if (implement.Name is null)
                     throw new Exception("Implement is missing a name");
 
-                list.Add(Create(implement.Name, null, currentNamespace));
+                list.Add(CreateResolveable(implement.Name, null));
             }
 
             return list;
         }
 
-        private static NamespaceName? GetNamespace(string? type, NamespaceName currentNamespace)
+        private static SymbolNameReference? GetSymbolNameReference(string? name)
         {
-            if (type is null)
-                return currentNamespace;
-
-            if (!type.Contains("."))
-                return currentNamespace;
-
-            return new NamespaceName(type.Split('.', 2)[0]);
-        }
-
-        private static TypeName? GetType(string? type)
-        {
-            if (type is null)
+            if (name is null)
                 return null;
 
-            if (!type.Contains("."))
-                return new TypeName(type);
+            if (!name.Contains("."))
+                return new SymbolNameReference(new SymbolName(name));
 
-            return new TypeName(type.Split('.', 2)[1]);
+            var parts = name.Split('.', 2);
+
+            return new SymbolNameReference(
+                new SymbolName(parts[1]), 
+                new NamespaceName(parts[0])
+            );
         }
 
-        private static CTypeName? GetCType(string? ctype)
+        private static CTypeReference? GetCType(string? ctype)
         {
             if (ctype is null)
                 return null;
 
-            ctype = ctype
-                .Replace("*", "")
-                .Replace("const ", "")
-                .Replace("volatile ", "")
-                .Replace(" const", "");
-
-            return new CTypeName(ctype);
+            return new CTypeReference(ctype);
         }
     }
 }

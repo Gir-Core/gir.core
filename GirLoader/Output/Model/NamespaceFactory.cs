@@ -39,7 +39,9 @@ namespace GirLoader.Output.Model
             var nspace = new Namespace(
                 name: @namespace.Name,
                 version: @namespace.Version,
-                sharedLibrary: @namespace.SharedLibrary
+                sharedLibrary: @namespace.SharedLibrary,
+                identifierPrefixes: @namespace.IdentifierPrefixes,
+                symbolPrefixes: @namespace.SymbolPrefixes
             );
 
             repository.SetNamespace(nspace);
@@ -112,14 +114,14 @@ namespace GirLoader.Output.Model
 
         private void SetFunctions(Namespace nspace, IEnumerable<Input.Model.Method> functions)
         {
-            foreach (Method method in _methodFactory.Create(functions, nspace.Name))
+            foreach (Method method in _methodFactory.Create(functions))
                 nspace.AddFunction(method);
         }
 
         private void SetConstants(Namespace nspace, IEnumerable<Input.Model.Constant> constants)
         {
             foreach (Input.Model.Constant constant in constants)
-                nspace.AddConstant(_constantFactory.Create(constant, nspace.Name));
+                nspace.AddConstant(_constantFactory.Create(constant));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GirLoader.Output.Model
         public IEnumerable<Signal> Signals => _signals;
         public IEnumerable<Method> Constructors => _constructors;
 
-        public Class(Repository repository, CTypeName? cTypeName, TypeName typeName, SymbolName symbolName, TypeReference? parent, IEnumerable<TypeReference> implements, IEnumerable<Method> methods, IEnumerable<Method> functions, Method getTypeFunction, IEnumerable<Property> properties, IEnumerable<Field> fields, IEnumerable<Signal> signals, IEnumerable<Method> constructors, bool isFundamental) : base(repository, cTypeName, typeName, symbolName)
+        public Class(Repository repository, CType? cType, SymbolName originalName, SymbolName symbolName, TypeReference? parent, IEnumerable<TypeReference> implements, IEnumerable<Method> methods, IEnumerable<Method> functions, Method getTypeFunction, IEnumerable<Property> properties, IEnumerable<Field> fields, IEnumerable<Signal> signals, IEnumerable<Method> constructors, bool isFundamental) : base(repository, cType, originalName, symbolName)
         {
             Parent = parent;
             Implements = implements;
@@ -89,12 +89,30 @@ namespace GirLoader.Output.Model
             _signals.RemoveAll(Remove);
         }
 
-        private bool Remove(Element element)
+        internal override bool Matches(TypeReference typeReference)
         {
-            var result = element.GetIsResolved();
+            if (typeReference.CTypeReference is not null && typeReference.CTypeReference.CType != "gpointer")
+                return typeReference.CTypeReference.CType == CType;
+
+            if (typeReference.SymbolNameReference is not null)
+            {
+                var nameMatches = typeReference.SymbolNameReference.SymbolName == OriginalName;
+                var namespaceMatches = typeReference.SymbolNameReference.NamespaceName == Repository.Namespace.Name;
+                var namespaceMissing = typeReference.SymbolNameReference.NamespaceName == null;
+
+                return nameMatches && (namespaceMatches || namespaceMissing);
+            }
+                
+
+            return false;
+        }
+
+        private bool Remove(Symbol symbol)
+        {
+            var result = symbol.GetIsResolved();
 
             if (!result)
-                Log.Information($"Class {Repository?.Namespace.Name}.{TypeName}: Stripping symbol {element.Name}");
+                Log.Information($"Class {Repository?.Namespace.Name}.{OriginalName}: Stripping symbol {symbol.OriginalName}");
 
             return !result;
         }

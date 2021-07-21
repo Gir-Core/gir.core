@@ -5,7 +5,7 @@ namespace Generator
     internal static class ReturnValueExtension
     {
         public static bool IsVoid(this ReturnValue returnValue)
-            => returnValue.TypeReference.GetResolvedType().SymbolName == "void";
+            => returnValue.TypeReference.GetResolvedType().Name == "void";
 
         public static string WriteNative(this ReturnValue returnValue, Namespace currentNamespace)
         {

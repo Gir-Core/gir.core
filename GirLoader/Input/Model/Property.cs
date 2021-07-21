@@ -38,6 +38,6 @@ namespace GirLoader.Input.Model
         public Type? Type { get; set; }
 
         [XmlElement("array")]
-        public Array? Array { get; set; }
+        public ArrayType? Array { get; set; }
     }
 }

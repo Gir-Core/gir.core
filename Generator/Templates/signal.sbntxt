@@ -2,9 +2,9 @@
 $signal_data = get_signal_data $1
 
 if $signal_data.needs_args
-    $signal_generic_args = this.symbol_name + ', ' + $signal_data.args_type
+    $signal_generic_args = this.name + ', ' + $signal_data.args_type
 else
-    $signal_generic_args = this.symbol_name
+    $signal_generic_args = this.name
 end
 ~}}
 #region Signal {{$signal_data.event_name}}

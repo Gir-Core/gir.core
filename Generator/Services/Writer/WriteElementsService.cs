@@ -17,7 +17,7 @@ namespace Generator.Services.Writer
             _scriptObjectFactory = scriptObjectFactory;
         }
 
-        public void Write(string projectName, string outputDir, string templateName, string subfolder, string name, IEnumerable<Element> elements, Namespace @namespace)
+        public void Write(string projectName, string outputDir, string templateName, string subfolder, string name, IEnumerable<Symbol> elements, Namespace @namespace)
         {
             var scriptObject = _scriptObjectFactory.CreateBase(@namespace);
             scriptObject.Add(name.ToLower(), elements);

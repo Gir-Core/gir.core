@@ -23,9 +23,9 @@ namespace GirLoader.Output.Model
                 throw new Exception($"Alias {alias.Name} is missing target");
 
             return new Alias(
-                elementName: new ElementName(alias.Type),
-                symbolName: new SymbolName(alias.Name),
-                typeReference: _typeReferenceFactory.Create(alias.For, repository.Namespace.Name),
+                cType: new CType(alias.Type),
+                name: new SymbolName(alias.Name),
+                typeReference: _typeReferenceFactory.CreateResolveable(alias.For.Name, alias.For.CType),
                 repository: repository
             );
         }

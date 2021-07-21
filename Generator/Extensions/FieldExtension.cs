@@ -9,10 +9,10 @@ namespace Generator
         {
             string type = field switch
             {
-                { Callback: { } c } => c.SymbolName,
+                { Callback: { } c } => c.Name,
 
                 // A native field which points to a record should never be a safehandle but always an IntPtr
-                { TypeInformation: { IsPointer: true }, TypeReference: { ResolvedType: Record { } } } => "IntPtr",
+                {TypeReference: {ResolvedType: Record, CTypeReference: {IsPointer: true}}} => "IntPtr",
 
                 _ => field.WriteType(Target.Native, currentNamespace)
             };
@@ -20,13 +20,13 @@ namespace Generator
             var builder = new StringBuilder();
             builder.Append(field.WriteNativeSummary());
 
-            if (field.TypeInformation.Array is { FixedSize: { } fixedSize })
+            if (field.TypeReference is ArrayTypeReference { FixedSize: { } fixedSize })
                 builder.AppendLine($"[MarshalAs(UnmanagedType.ByValArray, SizeConst = {fixedSize})]");
 
             if (type == "string")
                 builder.AppendLine($"[MarshalAs(UnmanagedType.LPStr)]");
 
-            builder.AppendLine($"{GetAccessibility(field)} {type} {field.SymbolName};");
+            builder.AppendLine($"{GetAccessibility(field)} {type} {field.Name};");
             return builder.ToString();
         }
 

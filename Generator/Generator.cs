@@ -18,6 +18,7 @@ namespace Generator
 
         public void Write(IEnumerable<GirFile> projects)
         {
+            //Loader.EnableVerboseOutput(); //TODO: Configure via settings
             var repositories = Loader.Load(FileResolver.ResolveFile, projects).ToList();
 
             var typeRenamer = new TypeRenamer();

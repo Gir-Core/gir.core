@@ -26,26 +26,26 @@ namespace GirLoader.Output.Model
                 _ => null
             };
 
-            CTypeName? cTypeName = null;
+            CType? cTypeName = null;
             if (@record.CType is { })
-                cTypeName = new CTypeName(@record.CType);
+                cTypeName = new CType(@record.CType);
 
             return new Record(
                 repository: repository,
-                cTypeName: cTypeName,
-                typeName: new TypeName(@record.Name),
+                cType: cTypeName,
+                originalName: new SymbolName(@record.Name),
                 symbolName: new SymbolName(@record.Name),
-                gLibClassStructFor: GetGLibClassStructFor(@record.GLibIsGTypeStructFor, repository.Namespace.Name),
-                methods: _methodFactory.Create(@record.Methods, repository.Namespace.Name),
-                functions: _methodFactory.Create(@record.Functions, repository.Namespace.Name),
+                gLibClassStructFor: GetGLibClassStructFor(@record.GLibIsGTypeStructFor, repository.Namespace),
+                methods: _methodFactory.Create(@record.Methods),
+                functions: _methodFactory.Create(@record.Functions),
                 getTypeFunction: getTypeFunction,
                 fields: _fieldFactory.Create(@record.Fields, repository),
                 disguised: @record.Disguised,
-                constructors: _methodFactory.Create(@record.Constructors, repository.Namespace.Name)
+                constructors: _methodFactory.Create(@record.Constructors)
             );
         }
 
-        private TypeReference? GetGLibClassStructFor(string? classStructForName, NamespaceName namespaceName)
+        private TypeReference? GetGLibClassStructFor(string? classStructForName, Namespace @namespace)
         {
             TypeReference? getGLibClassStructFor = null;
 
@@ -53,8 +53,8 @@ namespace GirLoader.Output.Model
             {
                 //We can generate the CType automatically because the class struct
                 //of a class must be part of the repository of the class itself.
-                var ctype = namespaceName + classStructForName;
-                getGLibClassStructFor = _typeReferenceFactory.Create(classStructForName, ctype, namespaceName);
+                var ctype = @namespace.IdentifierPrefixes + classStructForName;
+                getGLibClassStructFor = _typeReferenceFactory.CreateResolveable(classStructForName, ctype);
             }
 
             return getGLibClassStructFor;

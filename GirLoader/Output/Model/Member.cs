@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace GirLoader.Output.Model
 {
-    public class Member : Element
+    public class Member : Symbol
     {
         public string Value { get; }
 
-        public Member(ElementName elementName, SymbolName symbolName, string value) : base(elementName, symbolName)
+        public Member(SymbolName originalName, SymbolName symbolName, string value) : base(originalName, symbolName)
         {
             Value = value;
         }

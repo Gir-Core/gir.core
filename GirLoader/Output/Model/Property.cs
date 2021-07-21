@@ -2,20 +2,18 @@
 
 namespace GirLoader.Output.Model
 {
-    public class Property : Element, TransferableAnyType
+    public class Property : Symbol, TransferableAnyType
     {
         public Transfer Transfer { get; }
         public bool Writeable { get; }
         public bool Readable { get; }
         public TypeReference TypeReference { get; }
-        public TypeInformation TypeInformation { get; }
 
-        public Property(ElementName elementName, SymbolName symbolName, TypeReference typeReference, bool writeable, bool readable, Transfer transfer, TypeInformation typeInformation) : base(elementName, symbolName)
+        public Property(SymbolName originalName, SymbolName symbolName, TypeReference typeReference, bool writeable, bool readable, Transfer transfer) : base(originalName, symbolName)
         {
             TypeReference = typeReference;
             Writeable = writeable;
             Transfer = transfer;
-            TypeInformation = typeInformation;
             Readable = readable;
         }
 

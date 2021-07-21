@@ -3,12 +3,12 @@ using GirLoader.Helper;
 
 namespace GirLoader.Output.Model
 {
-    public class Method : Element
+    public class Method : Symbol
     {
         public ReturnValue ReturnValue { get; }
         public ParameterList ParameterList { get; }
 
-        public Method(ElementName elementName, SymbolName symbolName, ReturnValue returnValue, ParameterList parameterList) : base(elementName, symbolName)
+        public Method(SymbolName originalName, SymbolName symbolName, ReturnValue returnValue, ParameterList parameterList) : base(originalName, symbolName)
         {
             ReturnValue = returnValue;
             ParameterList = parameterList;
@@ -26,6 +26,6 @@ namespace GirLoader.Output.Model
             => ReturnValue.GetIsResolved() && ParameterList.GetIsResolved();
 
         public override string ToString()
-            => Name;
+            => OriginalName;
     }
 }

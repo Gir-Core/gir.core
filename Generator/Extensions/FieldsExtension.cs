@@ -62,7 +62,7 @@ namespace Generator
         {
             var builder = new StringBuilder();
             builder.Append(field.WriteNativeSummary());
-            builder.AppendLine($"    public {className}.Native.ClassStruct {field.SymbolName};");
+            builder.AppendLine($"    public {className}.Native.ClassStruct {field.Name};");
 
             return builder.ToString();
         }

@@ -10,25 +10,32 @@ namespace GirLoader.Helper
 {
     public class String
     {
-        public static string ToCamelCase(string str)
-        {
-            var pascalCase = ToPascal(str);
+        private readonly string _text;
 
-            return str switch
+        public String(string text)
+        {
+            _text = text;
+        }
+
+        public String ToCamelCase()
+        {
+            var pascalCase = ToPascal(_text);
+
+            return _text switch
             {
-                { Length: 0 } => "",
-                { Length: 1 } => pascalCase.ToLower(),
-                _ => char.ToLower(pascalCase[0]) + pascalCase[1..]
+                { Length: 0 } => new String(""),
+                { Length: 1 } => new String(pascalCase.ToLower()),
+                _ => new String(char.ToLower(pascalCase[0]) + pascalCase[1..])
             };
         }
 
-        public static string ToPascalCase(string str)
+        public String ToPascalCase()
         {
-            return str switch
+            return _text switch
             {
-                { Length: 0 } => "",
-                { Length: 1 } => str.ToUpper(),
-                _ => ToPascal(str)
+                { Length: 0 } => new String(""),
+                { Length: 1 } => new String(_text.ToUpper()),
+                _ => new String(ToPascal(_text))
             };
         }
 
@@ -46,12 +53,12 @@ namespace GirLoader.Helper
             return builder.ToString();
         }
 
-        public static string EscapeIdentifier(string identifier)
+        public String EscapeIdentifier()
         {
-            identifier = FixFirstCharIfNumber(identifier);
-            identifier = FixIfIdentifierIsKeyword(identifier);
+            var escaped = FixFirstCharIfNumber(_text);
+            escaped = FixIfIdentifierIsKeyword(escaped);
 
-            return identifier;
+            return new String(escaped);
         }
 
         private static string FixIfIdentifierIsKeyword(string identifier)
@@ -98,5 +105,13 @@ namespace GirLoader.Helper
 
         private static string CapitaliseSecondChar(string identifier)
             => $"{identifier[0]}{char.ToUpper(identifier[1])}{identifier?[2..]}";
+        
+        public string Get()
+            => _text;
+
+        public override string ToString()
+        {
+            return _text;
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace GirLoader.Output.Model
             _parameterListFactory = parameterListFactory;
         }
 
-        public Method Create(Input.Model.Method method, NamespaceName namespaceName)
+        public Method Create(Input.Model.Method method)
         {
             if (method.Name is null)
                 throw new Exception("Methodinfo name is null");
@@ -28,10 +28,10 @@ namespace GirLoader.Output.Model
             if (method.Name != string.Empty)
             {
                 return new Method(
-                    elementName: new ElementName(method.Identifier),
-                    symbolName: new SymbolName(Helper.String.EscapeIdentifier(Helper.String.ToPascalCase(method.Name))),
-                    returnValue: _returnValueFactory.Create(method.ReturnValue, namespaceName),
-                    parameterList: _parameterListFactory.Create(method.Parameters, namespaceName, method.Throws)
+                    originalName: new SymbolName(method.Identifier),
+                    symbolName: new SymbolName(new Helper.String(method.Name).ToPascalCase().EscapeIdentifier()),
+                    returnValue: _returnValueFactory.Create(method.ReturnValue),
+                    parameterList: _parameterListFactory.Create(method.Parameters, method.Throws)
                 );
             }
 
@@ -45,21 +45,20 @@ namespace GirLoader.Output.Model
         public Method CreateGetTypeMethod(string getTypeMethodName)
         {
             ReturnValue returnValue = _returnValueFactory.Create(
-                type: "GType",
+                ctype: "gsize",
                 transfer: Transfer.None,
-                nullable: false,
-                namespaceName: new NamespaceName("GLib")
+                nullable: false
             );
 
             return new Method(
-                elementName: new ElementName(getTypeMethodName),
+                originalName: new SymbolName(getTypeMethodName),
                 symbolName: new SymbolName("GetGType"),
                 returnValue: returnValue,
                 parameterList: new ParameterList()
             );
         }
 
-        public IEnumerable<Method> Create(IEnumerable<Input.Model.Method> methods, NamespaceName namespaceName)
+        public IEnumerable<Method> Create(IEnumerable<Input.Model.Method> methods)
         {
             var list = new List<Method>();
 
@@ -67,7 +66,7 @@ namespace GirLoader.Output.Model
             {
                 try
                 {
-                    list.Add(Create(method, namespaceName));
+                    list.Add(Create(method));
                 }
                 catch (SingleParameterFactory.VarArgsNotSupportedException ex)
                 {

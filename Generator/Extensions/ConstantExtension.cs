@@ -6,16 +6,23 @@ namespace Generator
     {
         public static string WriteManaged(this Constant constant)
         {
-            var type = constant.TypeReference.GetResolvedType().SymbolName;
+            var value = GetValue(constant);
 
-            var value = type switch
-            {
-                { Value: { } t } when t.EndsWith("Flags") => $"({t}) {constant.Value}",
-                { Value: { } t } when t == "string" => "\"" + constant.Value + "\"",
-                _ => constant.Value
-            };
+            var referencedTypeName = constant.TypeReference.GetResolvedType().Name;
+            return $"public static {referencedTypeName} {constant.Name} = {value};\r\n";
+        }
 
-            return $"public static {type} {constant.SymbolName} = {value};\r\n";
+        private static string GetValue(Constant constant)
+        {
+            var resolvedType = constant.TypeReference.GetResolvedType();
+
+            if (resolvedType.Name.Value.EndsWith("Flags"))
+                return $"({resolvedType.Name}) {constant.Value}";
+
+            if (resolvedType is String)
+                return "\"" + constant.Value + "\"";
+
+            return constant.Value;
         }
     }
 }

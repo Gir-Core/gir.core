@@ -7,14 +7,12 @@ namespace GirLoader.Output.Model
         public Transfer Transfer { get; }
         public bool Nullable { get; }
         public TypeReference TypeReference { get; }
-        public TypeInformation TypeInformation { get; }
 
-        public ReturnValue(TypeReference typeReference, Transfer transfer, bool nullable, TypeInformation typeInformation)
+        public ReturnValue(TypeReference typeReference, Transfer transfer, bool nullable)
         {
             TypeReference = typeReference;
             Transfer = transfer;
             Nullable = nullable;
-            TypeInformation = typeInformation;
         }
 
         public IEnumerable<TypeReference> GetTypeReferences()

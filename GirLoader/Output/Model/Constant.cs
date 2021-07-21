@@ -2,12 +2,12 @@
 
 namespace GirLoader.Output.Model
 {
-    public class Constant : Element
+    public class Constant : Symbol
     {
         public string Value { get; }
         public TypeReference TypeReference { get; }
 
-        public Constant(ElementName elementName, SymbolName symbolName, TypeReference typeReference, string value) : base(elementName, symbolName)
+        public Constant(SymbolName originalName, SymbolName symbolName, TypeReference typeReference, string value) : base(originalName, symbolName)
         {
             TypeReference = typeReference;
             Value = value;

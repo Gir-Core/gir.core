@@ -32,7 +32,7 @@ namespace Generator.Services.Writer
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Could not create type {cls.SymbolName}: {ex.Message}");
+                    Log.Error($"Could not create type {cls.Name}: {ex.Message}");
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace Generator.Services.Writer
                 outputDir: outputDir,
                 templateName: "class.sbntxt",
                 folder: Folder.Managed.Classes,
-                fileName: cls.SymbolName,
+                fileName: cls.Name,
                 scriptObject: scriptObject
             );
 
@@ -58,7 +58,7 @@ namespace Generator.Services.Writer
                 outputDir: outputDir,
                 templateName: "fundamental.class.sbntxt",
                 folder: Folder.Managed.Classes,
-                fileName: cls.SymbolName,
+                fileName: cls.Name,
                 scriptObject: scriptObject
             );
 
@@ -72,7 +72,7 @@ namespace Generator.Services.Writer
                 outputDir: outputDir,
                 templateName: "class.native.instance.sbntxt",
                 folder: Folder.Native.Classes,
-                fileName: cls.SymbolName + ".Instance",
+                fileName: cls.Name + ".Instance",
                 scriptObject: scriptObject
             );
         }

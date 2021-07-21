@@ -29,7 +29,7 @@ namespace Generator.Services.Writer
                         outputDir: outputDir,
                         templateName: "delegate.sbntxt",
                         folder: Folder.Managed.Delegates,
-                        fileName: callback.SymbolName,
+                        fileName: callback.Name,
                         scriptObject: scriptObject
                     );
 
@@ -38,13 +38,13 @@ namespace Generator.Services.Writer
                         outputDir: outputDir,
                         templateName: "native.delegate.sbntxt",
                         folder: Folder.Native.Delegates,
-                        fileName: callback.SymbolName,
+                        fileName: callback.Name,
                         scriptObject: scriptObject
                     );
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Could not write callback {callback.SymbolName}: {ex.Message}");
+                    Log.Error($"Could not write callback {callback.Name}: {ex.Message}");
                 }
             }
         }

@@ -18,7 +18,7 @@ namespace GirLoader.Output.Model
         public IEnumerable<Method> Constructors => _constructors;
         public IEnumerable<Method> Functions => _functions;
 
-        public Union(Repository repository, CTypeName? cTypeName, TypeName typeName, SymbolName symbolName, IEnumerable<Method> methods, IEnumerable<Method> functions, Method? getTypeFunction, IEnumerable<Field> fields, bool disguised, IEnumerable<Method> constructors) : base(repository, cTypeName, typeName, symbolName)
+        public Union(Repository repository, CType? cType, SymbolName originalName, SymbolName symbolName, IEnumerable<Method> methods, IEnumerable<Method> functions, Method? getTypeFunction, IEnumerable<Field> fields, bool disguised, IEnumerable<Method> constructors) : base(repository, cType, originalName, symbolName)
         {
             GetTypeFunction = getTypeFunction;
             Disguised = disguised;
@@ -64,14 +64,22 @@ namespace GirLoader.Output.Model
             _constructors.RemoveAll(Remove);
         }
 
-        private bool Remove(Element symbol)
+        private bool Remove(Symbol symbol)
         {
             var result = symbol.GetIsResolved();
 
             if (!result)
-                Log.Information($"Record {Repository?.Namespace.Name}.{TypeName}: Stripping symbol {symbol.Name}");
+                Log.Information($"Record {Repository?.Namespace.Name}.{OriginalName}: Stripping symbol {symbol.OriginalName}");
 
             return !result;
+        }
+        
+        internal override bool Matches(TypeReference typeReference)
+        {
+            if (typeReference.CTypeReference is not null)
+                return typeReference.CTypeReference.CType == CType;
+
+            return OriginalName == typeReference.SymbolNameReference.SymbolName;
         }
     }
 }

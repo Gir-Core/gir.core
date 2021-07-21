@@ -21,5 +21,10 @@ namespace GirLoader.Output.Model
         {
             this._namespace = @namespace;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Repository)} for {Namespace.Name}";
+        }
     }
 }

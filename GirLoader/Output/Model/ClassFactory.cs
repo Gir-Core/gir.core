@@ -27,45 +27,41 @@ namespace GirLoader.Output.Model
             if (cls.GetTypeFunction is null)
                 throw new Exception($"Class {cls.Name} is missing a get type function");
 
-            CTypeName? cTypeName = null;
+            CType? cTypeName = null;
             if (cls.Type is { })
-                cTypeName = new CTypeName(cls.Type);
+                cTypeName = new CType(cls.Type);
 
             return new Class(
                 repository: repository,
-                typeName: new TypeName(cls.Name),
+                originalName: new SymbolName(cls.Name),
                 symbolName: new SymbolName(cls.Name),
-                cTypeName: cTypeName,
-                parent: CreateParentTypeReference(cls.Parent, repository.Namespace.Name),
-                implements: _typeReferenceFactory.Create(cls.Implements, repository.Namespace.Name),
-                methods: _methodFactory.Create(cls.Methods, repository.Namespace.Name),
-                functions: _methodFactory.Create(cls.Functions, repository.Namespace.Name),
+                cType: cTypeName,
+                parent: CreateParentTypeReference(cls.Parent, repository.Namespace),
+                implements: _typeReferenceFactory.Create(cls.Implements),
+                methods: _methodFactory.Create(cls.Methods),
+                functions: _methodFactory.Create(cls.Functions),
                 getTypeFunction: _methodFactory.CreateGetTypeMethod(cls.GetTypeFunction),
-                properties: _propertyFactory.Create(cls.Properties, repository.Namespace.Name),
+                properties: _propertyFactory.Create(cls.Properties),
                 fields: _fieldFactory.Create(cls.Fields, repository),
-                signals: _signalFactory.Create(cls.Signals, repository.Namespace.Name),
-                constructors: _methodFactory.Create(cls.Constructors, repository.Namespace.Name),
+                signals: _signalFactory.Create(cls.Signals),
+                constructors: _methodFactory.Create(cls.Constructors),
                 isFundamental: cls.Fundamental
             );
         }
 
-        private TypeReference? CreateParentTypeReference(string? parentName, NamespaceName currentNamespace)
+        private TypeReference? CreateParentTypeReference(string? parentName, Namespace @namespace)
         {
             if (parentName is { })
-                return CreateTypeReference(parentName, currentNamespace);
+                return CreateTypeReference(parentName, @namespace);
 
             return null;
         }
 
-        private TypeReference CreateTypeReference(string type, NamespaceName currentNamespace)
+        private TypeReference CreateTypeReference(string name, Namespace @namespace)
         {
-            string? ctype = null;
-            if (!type.Contains("."))
-            {
-                //Prefix type if it is not prefixed already
-                ctype = currentNamespace + type;
-            }
-            return _typeReferenceFactory.Create(type, ctype, currentNamespace);
+            var ctype = !name.Contains(".") ? @namespace.IdentifierPrefixes + name : null;
+
+            return _typeReferenceFactory.CreateResolveable(name, ctype);
         }
     }
 }

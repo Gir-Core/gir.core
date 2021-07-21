@@ -8,13 +8,11 @@ namespace GirLoader.Output.Model
     {
         private readonly TypeReferenceFactory _typeReferenceFactory;
         private readonly CallbackFactory _callbackFactory;
-        private readonly TypeInformationFactory _typeInformationFactory;
 
-        public FieldFactory(TypeReferenceFactory typeReferenceFactory, CallbackFactory callbackFactory, TypeInformationFactory typeInformationFactory)
+        public FieldFactory(TypeReferenceFactory typeReferenceFactory, CallbackFactory callbackFactory)
         {
             _typeReferenceFactory = typeReferenceFactory;
             _callbackFactory = callbackFactory;
-            _typeInformationFactory = typeInformationFactory;
         }
 
         public Field Create(Input.Model.Field info, Repository repository)
@@ -22,16 +20,25 @@ namespace GirLoader.Output.Model
             if (info.Name is null)
                 throw new Exception("Field is missing name");
 
-            Callback? callback = null;
             if (info.Callback is not null)
-                callback = _callbackFactory.Create(info.Callback, repository);
+            {
+                if (info.Callback.Name is null)
+                    throw new Exception($"Field {info.Name} has a callback without a name.");
+                
+                return new Field(
+                    orignalName: new SymbolName(info.Name),
+                    symbolName: new SymbolName(new Helper.String(info.Name).ToPascalCase()),
+                    resolveableTypeReference: _typeReferenceFactory.CreateResolveable(info.Callback.Name, info.Callback.Type),
+                    callback: _callbackFactory.Create(info.Callback, repository),
+                    readable: info.Readable,
+                    @private: info.Private
+                );
+            }
 
             return new Field(
-                elementName: new ElementName(Helper.String.EscapeIdentifier(info.Name)),
-                symbolName: new SymbolName(Helper.String.ToPascalCase(Helper.String.EscapeIdentifier(info.Name))),
-                typeReference: CreateSymbolReference(info, repository.Namespace.Name),
-                callback: callback,
-                typeInformation: _typeInformationFactory.Create(info),
+                orignalName: new SymbolName(info.Name),
+                symbolName: new SymbolName(new Helper.String(info.Name).ToPascalCase()),
+                typeReference: _typeReferenceFactory.Create(info),
                 readable: info.Readable,
                 @private: info.Private
             );
@@ -39,16 +46,5 @@ namespace GirLoader.Output.Model
 
         public IEnumerable<Field> Create(IEnumerable<Input.Model.Field> infos, Repository repository)
             => infos.Select(x => Create(x, repository)).ToList();
-
-        private TypeReference CreateSymbolReference(Input.Model.Field field, NamespaceName currentNamespace)
-        {
-            if (field.Callback is null)
-                return _typeReferenceFactory.Create(field, currentNamespace);
-
-            if (field.Callback.Name is null)
-                throw new Exception($"Field {field.Name} has a callback without a name.");
-
-            return _typeReferenceFactory.Create(field.Callback.Name, field.Callback.Type, currentNamespace);
-        }
     }
 }

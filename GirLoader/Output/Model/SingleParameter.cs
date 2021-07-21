@@ -2,7 +2,7 @@
 
 namespace GirLoader.Output.Model
 {
-    public class SingleParameter : Element, Parameter
+    public class SingleParameter : Symbol, Parameter
     {
         public TypeReference TypeReference { get; }
         public Direction Direction { get; }
@@ -12,9 +12,8 @@ namespace GirLoader.Output.Model
         public int? ClosureIndex { get; }
         public int? DestroyIndex { get; }
         public Scope CallbackScope { get; }
-        public TypeInformation TypeInformation { get; }
 
-        public SingleParameter(ElementName elementName, SymbolName symbolName, TypeReference typeReference, Direction direction, Transfer transfer, bool nullable, bool callerAllocates, int? closureIndex, int? destroyIndex, Scope scope, TypeInformation typeInformation) : base(elementName, symbolName)
+        public SingleParameter(SymbolName originalName, SymbolName symbolName, TypeReference typeReference, Direction direction, Transfer transfer, bool nullable, bool callerAllocates, int? closureIndex, int? destroyIndex, Scope scope) : base(originalName, symbolName)
         {
             TypeReference = typeReference;
             Direction = direction;
@@ -24,7 +23,6 @@ namespace GirLoader.Output.Model
             ClosureIndex = closureIndex;
             DestroyIndex = destroyIndex;
             CallbackScope = scope;
-            TypeInformation = typeInformation;
         }
 
         public override IEnumerable<TypeReference> GetTypeReferences()

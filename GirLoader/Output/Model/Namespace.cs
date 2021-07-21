@@ -7,6 +7,9 @@ namespace GirLoader.Output.Model
     {
         #region Properties
 
+        public string IdentifierPrefixes { get; }
+        public string SymbolPrefixes { get; }
+        
         public NamespaceName NativeName => Name with { Value = Name.Value + ".Native" };
         public NamespaceName Name { get; }
         public string Version { get; }
@@ -44,11 +47,13 @@ namespace GirLoader.Output.Model
 
         #endregion
 
-        public Namespace(string name, string version, string? sharedLibrary)
+        public Namespace(string name, string version, string? sharedLibrary, string identifierPrefixes, string symbolPrefixes)
         {
             Name = new NamespaceName(name);
             Version = version;
             SharedLibrary = sharedLibrary;
+            IdentifierPrefixes = identifierPrefixes;
+            SymbolPrefixes = symbolPrefixes;
         }
 
         internal void AddAlias(Alias alias)
@@ -119,12 +124,22 @@ namespace GirLoader.Output.Model
             _constants.RemoveAll(Remove);
         }
 
-        private bool Remove(Element element)
+        private bool Remove(Alias alias)
         {
-            var result = element.GetIsResolved();
+            var result = alias.GetIsResolved();
 
             if (!result)
-                Log.Information($"{element.GetType().Name} {element.Name}: Removed because parts of it could not be completely resolvled");
+                Log.Information($"{nameof(Alias)} {alias.Name}: Removed because parts of it could not be completely resolvled");
+
+            return !result;
+        }
+
+        private bool Remove(Symbol symbol)
+        {
+            var result = symbol.GetIsResolved();
+
+            if (!result)
+                Log.Information($"{symbol.GetType().Name} {symbol.OriginalName}: Removed because parts of it could not be completely resolvled");
 
             return !result;
         }
@@ -134,7 +149,7 @@ namespace GirLoader.Output.Model
             var result = type.GetIsResolved();
 
             if (!result)
-                Log.Information($"{type.GetType().Name} {type.Repository?.Namespace.Name}.{type.TypeName}: Removed because parts of it could not be completely resolvled");
+                Log.Information($"{type.GetType().Name} {type.Repository?.Namespace.Name}.{type.OriginalName}: Removed because parts of it could not be completely resolvled");
 
             return !result;
         }

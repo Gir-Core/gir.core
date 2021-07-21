@@ -21,7 +21,7 @@ namespace {{ namespace.name }}
     /// </summary>
     public class {{ $managed_name }}CallHandler : IDisposable
     {
-        public Native.{{ symbol_name }} NativeCallback;
+        public Native.{{ name }} NativeCallback;
 
         private {{ $managed_name }} managedCallback;
     
@@ -53,7 +53,7 @@ namespace {{ namespace.name }}
     /// </summary>
     public class {{ $managed_name }}AsyncHandler : IDisposable
     {
-        public Native.{{ symbol_name }} NativeCallback;
+        public Native.{{ name }} NativeCallback;
 
         private {{ $managed_name }} managedCallback;
         private GCHandle gch;
@@ -91,7 +91,7 @@ namespace {{ namespace.name }}
     public class {{ $managed_name }}NotifiedHandler : IDisposable
     {
         public event EventHandler<EventArgs>? OnDestroyNotify;
-        public Native.{{ symbol_name }} NativeCallback;
+        public Native.{{ name }} NativeCallback;
         public GLib.Native.DestroyNotifyCallback DestroyNotify;
 
         private {{ $managed_name }} managedCallback;

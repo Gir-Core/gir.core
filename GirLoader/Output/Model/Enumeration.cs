@@ -9,7 +9,7 @@ namespace GirLoader.Output.Model
         public bool HasFlags { get; }
         public IEnumerable<Member> Members { get; }
 
-        public Enumeration(Repository repository, CTypeName? cTypeName, TypeName typeName, SymbolName symbolName, bool hasFlags, IEnumerable<Member> members) : base(repository, cTypeName, typeName, symbolName)
+        public Enumeration(Repository repository, CType? cType, SymbolName originalName, SymbolName symbolName, bool hasFlags, IEnumerable<Member> members) : base(repository, cType, originalName, symbolName)
         {
             HasFlags = hasFlags;
             Members = members;
@@ -20,5 +20,16 @@ namespace GirLoader.Output.Model
 
         public override bool GetIsResolved()
             => Members.AllResolved();
+
+        internal override bool Matches(TypeReference typeReference)
+        {
+            if (typeReference.CTypeReference is not null)
+                return typeReference.CTypeReference.CType == CType;
+
+            if (typeReference.SymbolNameReference is not null)
+                return typeReference.SymbolNameReference.SymbolName == OriginalName;
+
+            return false;
+        }
     }
 }

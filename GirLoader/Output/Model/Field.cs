@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace GirLoader.Output.Model
 {
-    public class Field : Element, AnyType
+    public class Field : Symbol, AnyType
     {
         public TypeReference TypeReference { get; }
-        public TypeInformation TypeInformation { get; }
 
         public Callback? Callback { get; }
         public bool Readable { get; }
@@ -20,24 +20,19 @@ namespace GirLoader.Output.Model
         /// <param name="callback">Optional: If set it is expected that the callback belongs to the given symbol reference.</param>
         /// <param name="readable"></param>
         /// <param name="private"></param>
-        /// <param name="elementName"></param>
-        public Field(ElementName elementName, SymbolName symbolName, TypeReference typeReference, TypeInformation typeInformation, Callback? callback = null, bool readable = true, bool @private = false) : base(elementName, symbolName)
+        /// <param name="orignalName"></param>
+        public Field(SymbolName orignalName, SymbolName symbolName, TypeReference typeReference, bool readable = true, bool @private = false) : base(orignalName, symbolName)
         {
             TypeReference = typeReference;
-            TypeInformation = typeInformation;
-            Callback = callback;
             Readable = readable;
             Private = @private;
-
-            TryResolveSymbolReference();
         }
 
-        private void TryResolveSymbolReference()
+        public Field(SymbolName orignalName, SymbolName symbolName, ResolveableTypeReference resolveableTypeReference, Callback callback, bool readable = true, bool @private = false) 
+            : this(orignalName, symbolName, resolveableTypeReference, readable, @private)
         {
-            if (Callback is null)
-                return;
-
-            TypeReference.ResolveAs(Callback);
+            Callback = callback;
+            resolveableTypeReference.ResolveAs(Callback);
         }
 
         public override IEnumerable<TypeReference> GetTypeReferences()

@@ -14,7 +14,7 @@ namespace GirLoader.Output.Model
             _instanceParameterFactory = instanceParameterFactory;
         }
 
-        public ParameterList Create(Input.Model.Parameters? parameters, NamespaceName namespaceName, bool throws = false)
+        public ParameterList Create(Input.Model.Parameters? parameters, bool throws = false)
         {
             List<SingleParameter> list = new();
             InstanceParameter? instanceParameter = null;
@@ -22,9 +22,9 @@ namespace GirLoader.Output.Model
             if (parameters is { })
             {
                 if (parameters.InstanceParameter is { })
-                    instanceParameter = _instanceParameterFactory.Create(parameters.InstanceParameter, namespaceName);
+                    instanceParameter = _instanceParameterFactory.Create(parameters.InstanceParameter);
 
-                list = parameters.List.Select(arg => _singleParameterFactory.Create(arg, namespaceName)).ToList();
+                list = parameters.List.Select(arg => _singleParameterFactory.Create(arg)).ToList();
 
                 if (throws)
                 {
@@ -41,7 +41,7 @@ namespace GirLoader.Output.Model
                         }
                     };
 
-                    list.Add(_singleParameterFactory.Create(parameterInfo, namespaceName));
+                    list.Add(_singleParameterFactory.Create(parameterInfo));
                 }
             }
 

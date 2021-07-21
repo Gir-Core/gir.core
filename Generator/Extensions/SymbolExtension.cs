@@ -8,7 +8,7 @@ namespace Generator
     {
         internal static string Write(this Type type, Target target, Namespace currentNamespace)
         {
-            var name = type.SymbolName;
+            var name = type.Name;
 
             var repositoryNamespace = type.Repository?.Namespace;
             if (!repositoryNamespace.IsForeignTo(currentNamespace))
@@ -30,7 +30,7 @@ namespace Generator
 
         public static string WriteTypeRegistration(this Type type)
         {
-            return $"TypeDictionary.Add(typeof({type.SymbolName}), new GObject.Type(Native.{type.SymbolName}.Instance.Methods.GetGType()));\r\n";
+            return $"TypeDictionary.Add(typeof({type.Name}), new GObject.Type(Native.{type.Name}.Instance.Methods.GetGType()));\r\n";
         }
     }
 }

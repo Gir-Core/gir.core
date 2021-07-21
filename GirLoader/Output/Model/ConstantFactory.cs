@@ -11,7 +11,7 @@ namespace GirLoader.Output.Model
             _typeReferenceFactory = typeReferenceFactory;
         }
 
-        public Constant Create(Input.Model.Constant constant, NamespaceName currentNamespace)
+        public Constant Create(Input.Model.Constant constant)
         {
             if (constant.Name is null)
                 throw new Exception($"{nameof(Input.Model.Constant)} misses a {nameof(constant.Name)}");
@@ -20,9 +20,9 @@ namespace GirLoader.Output.Model
                 throw new Exception($"{nameof(Input.Model.Constant)} {constant.Name} misses a {nameof(constant.Value)}");
 
             return new Constant(
-                elementName: new ElementName(Helper.String.EscapeIdentifier(constant.Name)),
-                symbolName: new SymbolName(Helper.String.EscapeIdentifier(constant.Name)),
-                typeReference: _typeReferenceFactory.Create(constant, currentNamespace),
+                originalName: new SymbolName(constant.Name),
+                symbolName: new SymbolName(new Helper.String(constant.Name).EscapeIdentifier()),
+                typeReference: _typeReferenceFactory.Create(constant),
                 value: constant.Value
             );
         }

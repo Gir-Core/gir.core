@@ -39,7 +39,7 @@ namespace Generator.Services.Writer
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Could not write safe handle for record for {record.SymbolName}: {ex.Message}");
+                    Log.Error($"Could not write safe handle for record for {record.Name}: {ex.Message}");
                 }
             }
         }

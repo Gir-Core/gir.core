@@ -25,16 +25,16 @@ namespace Generator.Services
             // TODO: This seems very inefficient - Optimise?
             foreach (var method in cls.Methods)
                 foreach (var prop in cls.Properties)
-                    if (method.SymbolName == prop.SymbolName)
-                        prop.SymbolName = new SymbolName(prop.SymbolName + "Prop");
+                    if (method.Name == prop.Name)
+                        prop.Name = new SymbolName(prop.Name + "Prop");
         }
 
         private static void FixClassMethods(Class cls)
         {
             foreach (var method in cls.Methods)
             {
-                if (method.SymbolName == cls.SymbolName)
-                    method.SymbolName = new SymbolName(method.SymbolName + "Func");
+                if (method.Name == cls.Name)
+                    method.Name = new SymbolName(method.Name + "Func");
             }
         }
 
@@ -42,9 +42,9 @@ namespace Generator.Services
         {
             foreach (var prop in cls.Properties)
             {
-                if (prop.SymbolName == cls.SymbolName)
+                if (prop.Name == cls.Name)
                 {
-                    prop.SymbolName = prop.SymbolName with { Value = prop.SymbolName + "Prop" };
+                    prop.Name = prop.Name with { Value = prop.Name + "Prop" };
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace Generator.Services
 
         private void SetCallbackMetadata(Callback callback)
         {
-            callback.Metadata["ManagedName"] = callback.SymbolName;
-            callback.SymbolName = new SymbolName(callback.SymbolName + "Callback");
+            callback.Metadata["ManagedName"] = callback.Name;
+            callback.Name = new SymbolName(callback.Name + "Callback");
         }
 
         private void SetUnionMetadata(IEnumerable<Union> unions)
@@ -94,10 +94,10 @@ namespace Generator.Services
 
         private void SetUnionMetadata(Union union)
         {
-            union.Metadata["Name"] = union.SymbolName;
+            union.Metadata["Name"] = union.Name;
             union.Metadata["StructName"] = "Struct";
 
-            union.SymbolName = new SymbolName($"{union.SymbolName}.Struct");
+            union.Name = new SymbolName($"{union.Name}.Struct");
         }
 
         private void SetRecordMetadata(IEnumerable<Record> records)
@@ -115,25 +115,25 @@ namespace Generator.Services
         {
             Debug.Assert(record.GLibClassStructFor is not null);
 
-            var className = record.GLibClassStructFor.GetResolvedType().SymbolName;
+            var className = record.GLibClassStructFor.GetResolvedType().Name;
             record.Metadata["Name"] = className;
             record.Metadata["StructName"] = "Class";
             record.Metadata["StructRefName"] = $"{className}.Class";
             record.Metadata["SafeHandleName"] = "Handle";
             record.Metadata["SafeHandleRefName"] = $"{className}.Handle";
 
-            record.SymbolName = new SymbolName($"{className}.Class");
+            record.Name = new SymbolName($"{className}.Class");
         }
 
         private void SetRecordMetadata(Record record)
         {
-            record.Metadata["Name"] = record.SymbolName;
+            record.Metadata["Name"] = record.Name;
             record.Metadata["StructName"] = "Struct";
-            record.Metadata["StructRefName"] = $"{record.SymbolName}.Struct";
+            record.Metadata["StructRefName"] = $"{record.Name}.Struct";
             record.Metadata["SafeHandleName"] = "Handle";
-            record.Metadata["SafeHandleRefName"] = $"{record.SymbolName}.Handle";
+            record.Metadata["SafeHandleRefName"] = $"{record.Name}.Handle";
 
-            record.SymbolName = new SymbolName($"{record.SymbolName}");
+            record.Name = new SymbolName($"{record.Name}");
         }
     }
 }
